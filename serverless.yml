@@ -2,11 +2,11 @@ service: dynamodb-api
 
 provider:
   name: aws
-  runtime: nodejs18.x
+  runtime: nodejs16.x
   stage: dev
   region: us-west-1
   environment:
-    DYNAMODB_TABLE_NAME: ${self:custom:postsTableName}
+    DYNAMODB_TABLE_NAME: ${self:custom.postsTableName}
 
 plugins:
   - serverless-webpack
@@ -90,14 +90,14 @@ functions:
           - !GetAtt PostsTable.Arn
           
 custom:
-  postsTableName: posts-table-${self:provider:stage}
+  postsTableName: posts-table-${self:provider.stage}
 
 resources:
   Resources:
     PostsTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${self:custom:postsTableName}
+        TableName: ${self:custom.postsTableName}
         AttributeDefinitions:
           - AttributeName: postId
             AttributeType: S
