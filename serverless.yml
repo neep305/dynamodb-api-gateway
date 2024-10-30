@@ -9,7 +9,6 @@ provider:
     DYNAMODB_TABLE_NAME: ${self:custom.postsTableName}
 
 plugins:
-  - serverless-webpack
   - serverless-iam-roles-per-function
 
 functions:
