@@ -34,8 +34,11 @@ const getAllPosts = async (event) => {
     console.log(Items);
     return {
         statusCode: 200,
-        message: "Posts retrieved successfully",
-        body: JSON.stringify({ message: "Posts retrieved successfully", posts: Items.map((item) => unmarshall(item)) }),
+        body: JSON.stringify({ 
+            message: "Posts retrieved successfully", 
+            data: Items.map((item) => unmarshall(item)),
+            Items 
+        }),
     };
   } catch (error) {
     console.error(error);
@@ -57,8 +60,10 @@ const createPost = async (event) => {
     
     return {
       statusCode: 200,
-      message: "Post created successfully",
-      body: JSON.stringify({ message: "Post created successfully", post: createdPostResponse }),
+      body: JSON.stringify({ 
+        message: "Post created successfully", 
+        createdPostResponse,
+      }),
     };
   } catch (error) {
     console.error(error);
