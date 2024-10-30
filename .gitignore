@@ -1,0 +1,7 @@
+node_modules
+.serverless
+.aws-sam
+.aws-sam-iacs
+.aws-sam-iacs-cache
+.aws-sam-iacs-cache-v2
+yarn-error.log

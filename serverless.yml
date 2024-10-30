@@ -1,0 +1,109 @@
+service: dynamodb-api
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  stage: dev
+  region: us-west-1
+  environment:
+    DYNAMODB_TABLE_NAME: ${self:custom:postsTableName}
+
+plugins:
+  - serverless-webpack
+  - serverless-iam-roles-per-function
+
+functions:
+  getPost:
+    handler: api.getPost
+    name: get-post
+    memorySize: 128
+    timeout: 5
+    events:
+      - http:
+          path: posts/{postId}
+          method: get
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:GetItem
+        Resource:
+          - !GetAtt PostsTable.Arn
+  createPost:
+    handler: api.createPost
+    name: create-post
+    memorySize: 128
+    timeout: 5
+    events:
+      - http:
+          path: post
+          method: post
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:PutItem
+        Resource:
+          - !GetAtt PostsTable.Arn
+  updatePost:
+    handler: api.updatePost
+    name: update-post
+    memorySize: 128
+    timeout: 5
+    events:
+      - http:
+          path: posts/{postId}
+          method: put
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:UpdateItem
+        Resource:
+          - !GetAtt PostsTable.Arn
+  deletePost:
+    handler: api.deletePost
+    name: delete-post
+    memorySize: 128
+    timeout: 5
+    events:
+      - http:
+          path: posts/{postId}
+          method: delete
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:DeleteItem
+        Resource:
+          - !GetAtt PostsTable.Arn
+  getAllPosts:
+    handler: api.getAllPosts
+    name: get-all-posts
+    memorySize: 128
+    timeout: 5
+    events:
+      - http:
+          path: posts
+          method: get
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Scan
+        Resource:
+          - !GetAtt PostsTable.Arn
+          
+custom:
+  postsTableName: posts-table-${self:provider:stage}
+
+resources:
+  Resources:
+    PostsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom:postsTableName}
+        AttributeDefinitions:
+          - AttributeName: postId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: postId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
